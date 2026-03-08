@@ -782,7 +782,9 @@ export const useStore = createWithEqualityFn<AppState & AppAction>()(
 
       getBrushSize: (): number => {
         return (
-          get().editorState.baseBrushSize * get().editorState.brushSizeScale
+          get().editorState.baseBrushSize *
+          get().editorState.brushSizeScale *
+          0.3
         )
       },
 
