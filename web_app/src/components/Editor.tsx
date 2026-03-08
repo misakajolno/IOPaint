@@ -549,7 +549,7 @@ export default function Editor(props: EditorProps) {
     }
 
     // TODO: download to output directory
-    const name = file.name.replace(/(\.[\w\d_-]+)$/i, "_cleanup$1")
+    const name = file.name
     const curRender = renders[renders.length - 1]
     downloadImage(curRender.currentSrc, name)
     if (settings.enableDownloadMask) {
@@ -928,8 +928,9 @@ export default function Editor(props: EditorProps) {
 
       <div className="fixed flex bottom-5 border px-4 py-2 rounded-[3rem] gap-8 items-center justify-center backdrop-filter backdrop-blur-md bg-background/70">
         <Slider
-          className="w-48"
-          defaultValue={[50]}
+          className="bottom-toolbar-slider w-[212px]"
+          defaultValue={[11]}
+          thumbClassName="h-5 w-5"
           min={MIN_BRUSH_SIZE}
           max={MAX_BRUSH_SIZE}
           step={1}

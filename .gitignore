@@ -10,3 +10,19 @@ IOPaint.egg-info/
 venv/
 tmp/
 iopaint/web_app/
+.venv-iopaint/
+.iopaint-cache/
+.iopaint-models/
+.iopaint-output/
+.iopaint-state/
+IOPaint Launcher.exe
+windows/launcher/iopaint-launcher.ico
+web_app/node_modules/
+web_app/dist/
+!docs/
+!docs/plans/
+!docs/plans/**
+tests/
+!tests/
+!tests/windows/
+!tests/windows/**

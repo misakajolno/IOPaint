@@ -28,6 +28,8 @@ from fastapi.exceptions import HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse, FileResponse, Response
 from fastapi.staticfiles import StaticFiles
+from starlette.datastructures import Headers
+from starlette.staticfiles import NotModifiedResponse
 from loguru import logger
 from socketio import AsyncServer
 
@@ -65,6 +67,29 @@ from iopaint.schema import (
 
 CURRENT_DIR = Path(__file__).parent.absolute().resolve()
 WEB_APP_DIR = CURRENT_DIR / "web_app"
+
+
+class NoCacheHtmlStaticFiles(StaticFiles):
+    @staticmethod
+    def _apply_html_cache_headers(response: Response, full_path) -> None:
+        if str(full_path).endswith(".html"):
+            response.headers["Cache-Control"] = "no-store, no-cache, must-revalidate"
+            response.headers["Pragma"] = "no-cache"
+            response.headers["Expires"] = "0"
+
+    def file_response(self, full_path, stat_result, scope, status_code: int = 200) -> Response:
+        method = scope["method"]
+        request_headers = Headers(scope=scope)
+
+        response = FileResponse(
+            full_path, status_code=status_code, stat_result=stat_result, method=method
+        )
+        self._apply_html_cache_headers(response, full_path)
+        if self.is_not_modified(response.headers, request_headers):
+            not_modified_response = NotModifiedResponse(response.headers)
+            self._apply_html_cache_headers(not_modified_response, full_path)
+            return not_modified_response
+        return response
 
 
 def api_middleware(app: FastAPI):
@@ -171,7 +196,7 @@ class Api:
         self.add_api_route("/api/v1/samplers", self.api_samplers, methods=["GET"])
         self.add_api_route("/api/v1/adjust_mask", self.api_adjust_mask, methods=["POST"])
         self.add_api_route("/api/v1/save_image", self.api_save_image, methods=["POST"])
-        self.app.mount("/", StaticFiles(directory=WEB_APP_DIR, html=True), name="assets")
+        self.app.mount("/", NoCacheHtmlStaticFiles(directory=WEB_APP_DIR, html=True), name="assets")
         # fmt: on
 
         global global_sio

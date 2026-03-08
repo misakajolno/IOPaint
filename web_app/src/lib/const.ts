@@ -1,5 +1,5 @@
 export const ACCENT_COLOR = "#ffcc00bb"
-export const DEFAULT_BRUSH_SIZE = 40
+export const DEFAULT_BRUSH_SIZE = 11
 export const MIN_BRUSH_SIZE = 1
 export const MAX_BRUSH_SIZE = 200
 export const MODEL_TYPE_INPAINT = "inpaint"
